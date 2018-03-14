@@ -1,0 +1,20 @@
+{
+  "name": "baqend/spider",
+  "description": "URL spider which crawls a page and all its subpages",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Konstantin Simon Maria Möllers",
+      "email": "ksm@baqend.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Baqend\\Component\\Spider\\": "."
+    }
+  },
+  "require": {
+    "php": ">= 5.5.9"
+  }
+}
