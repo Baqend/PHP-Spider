@@ -2,7 +2,7 @@
 
 namespace Baqend\Component\Spider\Downloader;
 
-use Baqend\Component\Spider\Resource;
+use Baqend\Component\Spider\Asset;
 
 /**
  * Interface DownloaderInterface created on 2018-03-14.
@@ -13,10 +13,10 @@ interface DownloaderInterface
 {
 
     /**
-     * Downloads a resource by its URL.
+     * Downloads an asset by its URL.
      *
      * @param string $url The URL to download.
-     * @return Resource The downloaded resource.
+     * @return Asset The downloaded asset.
      * @throws DownloaderException When the download did not succeed.
      */
     public function download($url);

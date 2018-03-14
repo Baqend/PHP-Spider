@@ -3,7 +3,7 @@
 namespace Baqend\Component\Spider\Processor;
 
 use Baqend\Component\Spider\Queue\QueueInterface;
-use Baqend\Component\Spider\Resource;
+use Baqend\Component\Spider\Asset;
 
 /**
  * Interface ProcessorInterface created on 2018-03-14.
@@ -14,21 +14,21 @@ interface ProcessorInterface
 {
 
     /**
-     * Checks whether this resource can be processed.
+     * Checks whether this asset can be processed.
      *
-     * @param Resource $resource
-     * @return boolean True, if the given resource can be processed by this processor.
+     * @param Asset $asset
+     * @return boolean True, if the given asset can be processed by this processor.
      */
-    public function canProcess(Resource $resource);
+    public function canProcess(Asset $asset);
 
     /**
-     * Processes a given resource.
+     * Processes a given asset.
      *
-     * Discovered new resources are written to the provided queue.
+     * Discovered new assets are written to the provided queue.
      *
-     * @param Resource $resource The resource to be processed.
+     * @param Asset $asset The asset to be processed.
      * @param QueueInterface $queue The queue to add new files to.
      * @return void
      */
-    public function process(Resource $resource, QueueInterface $queue);
+    public function process(Asset $asset, QueueInterface $queue);
 }
