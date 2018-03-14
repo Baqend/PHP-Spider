@@ -110,4 +110,98 @@ class UrlHelper
         return "/^$regExp$/$flags";
     }
 
+    /**
+     * @param string $url
+     * @param string $toResolve
+     * @return string
+     */
+    public static function resolve($url, $toResolve) {
+        if (empty($toResolve)) {
+            return $url;
+        }
+
+        // Check if toResolve is absolute
+        $toResolveSchema = self::extractSchema($toResolve);
+        if ($toResolveSchema !== null) {
+            return $toResolve;
+        }
+
+        // Is it an absolute "//" URL?
+        if ($toResolve[0] === '/') {
+            // Is it a "//" URL?
+            if (strlen($toResolve) > 1 && $toResolve[1] === '/') {
+                return self::extractSchema($url).':'.$toResolve;
+            }
+
+            return self::extractOrigin($url).$toResolve;
+        }
+
+        list($origin, $path) = self::extractOriginAndPath($url);
+        $path = ltrim($path, '/');
+
+        $segments = empty($path) ? [] : explode('/', preg_replace('#/+#', '/', $path));
+        $toResolve = preg_replace('#/+#', '/', $toResolve);
+        $stripFilename = true;
+
+        foreach (explode('/', $toResolve) as $segment) {
+            if ($segment === '..') {
+                if (array_pop($segments) === null) {
+                    return null;
+                }
+                continue;
+            }
+
+            if ($segment === '.') {
+                continue;
+            }
+
+            if ($segment && $stripFilename) {
+                array_pop($segments);
+                $stripFilename = false;
+            }
+            $segments[] = $segment;
+        }
+
+        return $origin.'/'.implode('/', $segments);
+    }
+
+    /**
+     * Extracts the schema of a URL, e.g. "https".
+     *
+     * @param string $url A URL to get the schema of.
+     * @return null|string The schema or null, if it is not part of the URL.
+     */
+    public static function extractSchema($url) {
+        return preg_match('#^(https?)://#', $url, $matches) === 1 ? $matches[1] : null;
+    }
+
+    /**
+     * Extracts the origin of a URL, e.g. "https://www.exmaple.org".
+     *
+     * @param string $url A URL to get the origin of.
+     * @return null|string The origin or null, if it is not part of the URL.
+     */
+    public static function extractOrigin($url) {
+        return preg_match('#^(https?://[^/]+)#', $url, $matches) === 1 ? $matches[1] : null;
+    }
+
+    /**
+     * Extracts the path of a URL, e.g. "/my/absolute/path.html".
+     *
+     * @param string $url A URL to get the path of.
+     * @return null|string The path or null, if it is not part of the URL.
+     */
+    public static function extractPath($url) {
+        return preg_match('#^https?://[^/]+(.*)$#', $url, $matches) === 1 ? $matches[1] : null;
+    }
+
+    /**
+     * Extracts the origin and path of a URL, e.g. ["https://www.exmaple.org", "/my/absolute/path.html"].
+     *
+     * @param string $url A URL to get the origin and path of.
+     * @return array The origin and path in a tuple or two nulls in a tuple, if it is not part of the URL.
+     */
+    public static function extractOriginAndPath($url) {
+        return preg_match('#^(https?://[^/]+)(.*)$#', $url, $matches) === 1 ? [$matches[1], $matches[2]] : [null, null];
+    }
 }
