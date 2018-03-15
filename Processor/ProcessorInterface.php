@@ -28,7 +28,7 @@ interface ProcessorInterface
      *
      * @param Asset $asset The asset to be processed.
      * @param QueueInterface $queue The queue to add new files to.
-     * @return void
+     * @return Asset The processed asset.
      */
     public function process(Asset $asset, QueueInterface $queue);
 }
