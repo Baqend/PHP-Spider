@@ -141,28 +141,32 @@ class UrlHelper
 
         $segments = empty($path) ? [] : explode('/', preg_replace('#/+#', '/', $path));
         $toResolve = preg_replace('#/+#', '/', $toResolve);
+        list($toResolve, $fragment) = self::stripFragment($toResolve);
         $stripFilename = true;
 
-        foreach (explode('/', $toResolve) as $segment) {
-            if ($segment === '..') {
-                if (array_pop($segments) === null) {
-                    return null;
+        if ($toResolve) {
+            foreach (explode('/', $toResolve) as $segment) {
+                if ($segment === '..') {
+                    if (array_pop($segments) === null) {
+                        return null;
+                    }
+                    continue;
                 }
-                continue;
-            }
 
-            if ($segment === '.') {
-                continue;
-            }
+                if ($segment === '.') {
+                    continue;
+                }
 
-            if ($segment && $stripFilename) {
-                array_pop($segments);
-                $stripFilename = false;
+                if ($segment && $stripFilename) {
+                    array_pop($segments);
+                    $stripFilename = false;
+                }
+
+                $segments[] = $segment;
             }
-            $segments[] = $segment;
         }
 
-        return $origin.'/'.implode('/', $segments);
+        return $origin.'/'.implode('/', $segments).$fragment;
     }
 
     /**
@@ -203,5 +207,15 @@ class UrlHelper
      */
     public static function extractOriginAndPath($url) {
         return preg_match('#^(https?://[^/]+)(.*)$#', $url, $matches) === 1 ? [$matches[1], $matches[2]] : [null, null];
+    }
+
+    /**
+     * Strips away the fragment of a URL, e.g. "#fragment".
+     *
+     * @param string $url A URL to strip the fragment of.
+     * @return string[] The previous URL part and the fragment.
+     */
+    public static function stripFragment($url) {
+        return preg_match('!^([^#]*)(#.*)$!', $url, $matches) === 1 ? [$matches[1], $matches[2]] : [$url, ''];
     }
 }

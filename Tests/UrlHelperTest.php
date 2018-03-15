@@ -55,6 +55,14 @@ class UrlHelperTest extends TestCase
         );
 
         $this->assertEquals(
+            'https://www.other.org/my/path#fragment',
+            UrlHelper::resolve(
+                'https://www.example.org/your/path',
+                'https://www.other.org/my/path#fragment'
+            )
+        );
+
+        $this->assertEquals(
             'https://www.other.org/my/path',
             UrlHelper::resolve(
                 'https://www.example.org/your/path',
@@ -67,6 +75,14 @@ class UrlHelperTest extends TestCase
             UrlHelper::resolve(
                 'https://www.example.org/your/path',
                 '/my/path'
+            )
+        );
+
+        $this->assertEquals(
+            'https://www.example.org/my/path#fragment',
+            UrlHelper::resolve(
+                'https://www.example.org/your/path',
+                '/my/path#fragment'
             )
         );
 
@@ -178,6 +194,22 @@ class UrlHelperTest extends TestCase
             UrlHelper::resolve(
                 'https://www.example.org',
                 '../index.html'
+            )
+        );
+
+        $this->assertEquals(
+            'https://www.example.org/your/path',
+            UrlHelper::resolve(
+                'https://www.example.org/your/path',
+                ''
+            )
+        );
+
+        $this->assertEquals(
+            'https://www.example.org/your/path#fragment',
+            UrlHelper::resolve(
+                'https://www.example.org/your/path',
+                '#fragment'
             )
         );
     }
