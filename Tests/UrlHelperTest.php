@@ -273,4 +273,21 @@ class UrlHelperTest extends TestCase
         $this->assertEquals([null, null], UrlHelper::extractOriginAndPath('/some/absolute/path'));
         $this->assertEquals([null, null], UrlHelper::extractOriginAndPath('some/relative/path'));
     }
+
+    /**
+     * @test
+     */
+    public function stripQueryFragment() {
+        $this->assertEquals('https://example.org', UrlHelper::stripQueryFragment('https://example.org#demo'));
+        $this->assertEquals('https://example.org/', UrlHelper::stripQueryFragment('https://example.org/#demo'));
+        $this->assertEquals('https://example.org/test', UrlHelper::stripQueryFragment('https://example.org/test#demo'));
+
+        $this->assertEquals('https://example.org', UrlHelper::stripQueryFragment('https://example.org?demo'));
+        $this->assertEquals('https://example.org/', UrlHelper::stripQueryFragment('https://example.org/?demo'));
+        $this->assertEquals('https://example.org/test', UrlHelper::stripQueryFragment('https://example.org/test?demo'));
+
+        $this->assertEquals('https://example.org', UrlHelper::stripQueryFragment('https://example.org?demo#foobar'));
+        $this->assertEquals('https://example.org/', UrlHelper::stripQueryFragment('https://example.org/?demo#foobar'));
+        $this->assertEquals('https://example.org/test', UrlHelper::stripQueryFragment('https://example.org/test?demo#foobar'));
+    }
 }

@@ -218,4 +218,14 @@ class UrlHelper
     public static function stripFragment($url) {
         return preg_match('!^([^#]*)(#.*)$!', $url, $matches) === 1 ? [$matches[1], $matches[2]] : [$url, ''];
     }
+
+    /**
+     * Strips away the query and fragment of a URL, e.g. "?query#fragment".
+     *
+     * @param string $url A URL to strip the query and fragment of.
+     * @return string The previous URL without query and fragment.
+     */
+    public static function stripQueryFragment($url) {
+        return preg_match('!^https?://[^/#?]+[^#?]*!', $url, $matches) === 1 ? $matches[0] : $url;
+    }
 }
