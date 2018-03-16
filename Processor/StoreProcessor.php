@@ -74,6 +74,11 @@ class StoreProcessor implements ProcessorInterface
 
         $filename = $this->rootDirectory . substr($url, strlen($this->prefix));
 
+        // Is the targeted file a directory? Append "index.html"
+        if ($filename[strlen($filename) - 1] === '/') {
+            $filename .= 'index.html';
+        }
+
         // Ensure directory exists
         $directory = dirname($filename);
         if (!is_dir($directory)) {
