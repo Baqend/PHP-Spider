@@ -29,6 +29,7 @@ interface ProcessorInterface
      * @param Asset $asset The asset to be processed.
      * @param QueueInterface $queue The queue to add new files to.
      * @return Asset The processed asset.
+     * @throws InputOutputException When I/O operations during processing fail.
      */
     public function process(Asset $asset, QueueInterface $queue);
 }

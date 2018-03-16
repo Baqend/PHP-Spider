@@ -98,7 +98,11 @@ class Spider
                 $erredUrls[] = new UnprocessableException($url);
                 continue;
             }
-            $this->processor->process($asset, $this->queue);
+            try {
+                $this->processor->process($asset, $this->queue);
+            } catch (Processor\InputOutputException $e) {
+                $erredUrls[] = $e;
+            }
         }
 
         return $erredUrls;
