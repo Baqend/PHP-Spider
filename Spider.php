@@ -2,12 +2,12 @@
 
 namespace Baqend\Component\Spider;
 
-use Baqend\Component\Spider\AssetHandler\AssetHandlerInterface;
 use Baqend\Component\Spider\Downloader\DownloaderException;
 use Baqend\Component\Spider\Downloader\DownloaderInterface;
 use Baqend\Component\Spider\Processor\ProcessorInterface;
 use Baqend\Component\Spider\Processor\UnprocessableException;
 use Baqend\Component\Spider\Queue\QueueInterface;
+use Baqend\Component\Spider\UrlHandler\UrlHandlerInterface;
 
 /**
  * Class Spider created on 2018-03-14.
@@ -29,9 +29,9 @@ class Spider
     private $downloader;
 
     /**
-     * @var AssetHandlerInterface|null
+     * @var UrlHandlerInterface|null
      */
-    private $assetHandler;
+    private $urlHandler;
 
     /**
      * @var ProcessorInterface|null
@@ -43,18 +43,18 @@ class Spider
      *
      * @param QueueInterface $queue A queue to store URLs to download and process.
      * @param DownloaderInterface$downloader A downloader to download URLs and provide assets.
-     * @param AssetHandlerInterface|null $assetHandler An optional handler for downloaded assets.
-     * @param ProcessorInterface|null  $processor An optional processor for downloaded files.
+     * @param UrlHandlerInterface|null $urlHandler An optional handler for URLs to download.
+     * @param ProcessorInterface|null $processor An optional processor for downloaded files.
      */
     public function __construct(
         QueueInterface $queue,
         DownloaderInterface $downloader,
-        AssetHandlerInterface $assetHandler = null,
+        UrlHandlerInterface $urlHandler = null,
         ProcessorInterface $processor = null
     ) {
         $this->queue = $queue;
         $this->downloader = $downloader;
-        $this->assetHandler = $assetHandler;
+        $this->urlHandler = $urlHandler;
         $this->processor = $processor;
     }
 
@@ -77,20 +77,19 @@ class Spider
         $erredUrls = [];
 
         while ($url = $this->queue->next()) {
+            // Handle URL to download
+            if ($this->urlHandler !== null) {
+                if (!$this->urlHandler->handle($url)) {
+                    continue;
+                }
+            }
+
             // Try to download the next URL
             try {
                 $asset = $this->downloader->download($url);
             } catch (DownloaderException $e) {
                 $erredUrls[] = $e;
                 continue;
-            }
-
-            // Handle downloaded asset
-            if ($this->assetHandler !== null) {
-                $asset = $this->assetHandler->handle($asset);
-                if ($asset === null) {
-                    continue;
-                }
             }
 
             // Try to process the asset
@@ -129,11 +128,11 @@ class Spider
     }
 
     /**
-     * @param AssetHandlerInterface $assetHandler
+     * @param UrlHandlerInterface $urlHandler
      * @return $this
      */
-    public function setAssetHandler(AssetHandlerInterface $assetHandler) {
-        $this->assetHandler = $assetHandler;
+    public function setUrlHandler(UrlHandlerInterface $urlHandler) {
+        $this->urlHandler = $urlHandler;
 
         return $this;
     }
