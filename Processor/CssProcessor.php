@@ -80,7 +80,7 @@ class CssProcessor implements ProcessorInterface
 
         $extractedUrl = UrlHelper::resolve($asset->getUrl(), $url);
 
-        $queue->add($extractedUrl);
+        $queue->add(UrlHelper::stripQueryFragment($extractedUrl));
         $match = str_ireplace($url, $extractedUrl, $match);
 
         return $match;

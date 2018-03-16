@@ -67,6 +67,20 @@ class CssProcessorTest extends TestCase
         $this->assertEquals('https://example.org/style.css', $queue->next());
         $this->assertEquals('https://example.org/img/kittens.gif', $queue->next());
         $this->assertNull($queue->next());
+
+        $asset = $this->createAsset('/style.css', 'body { background: url(img/kittens.gif?query); }');
+        $queue->add($asset->getUrl());
+        $css = $processor->process($asset, $queue);
+
+        $this->assertEquals('body { background: url(https://example.org/img/kittens.gif?query); }', $css->getContent());
+        $this->assertNull($queue->next());
+
+        $asset = $this->createAsset('/style.css', 'body { background: url(img/kittens.gif#fragment); }');
+        $queue->add($asset->getUrl());
+        $css = $processor->process($asset, $queue);
+
+        $this->assertEquals('body { background: url(https://example.org/img/kittens.gif#fragment); }', $css->getContent());
+        $this->assertNull($queue->next());
     }
 
     /**

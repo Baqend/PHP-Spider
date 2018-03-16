@@ -168,7 +168,7 @@ class HtmlProcessor implements ProcessorInterface
 
         $currentValue = $element->getAttribute($attribute);
         $updatedValue = UrlHelper::resolve($asset->getUrl(), $currentValue);
-        $queue->add(UrlHelper::stripFragment($updatedValue)[0]);
+        $queue->add(UrlHelper::stripQueryFragment($updatedValue));
 
         $element->setAttribute($attribute, $updatedValue);
     }
@@ -187,8 +187,8 @@ class HtmlProcessor implements ProcessorInterface
         preg_match_all('/([^"\'\s,]+)\s*\s+(\d+[wx])(?:,\s*)?/', $value, $sources, PREG_SET_ORDER);
         foreach ($sources as $source) {
             list(, $url, $config) = $source;
-            $url = UrlHelper::resolve($asset->getUrl(), UrlHelper::stripFragment($url)[0]);
-            $queue->add($url);
+            $url = UrlHelper::resolve($asset->getUrl(), $url);
+            $queue->add(UrlHelper::stripQueryFragment($url));
 
             $srcset[] = "$url $config";
         }

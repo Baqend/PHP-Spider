@@ -74,6 +74,20 @@ class HtmlProcessorTest extends TestCase
         $this->assertEquals('https://example.org/subdir/index.html', $queue->next());
         $this->assertEquals('https://example.org/styles/main.css', $queue->next());
         $this->assertNull($queue->next());
+
+        $asset = $this->createAsset('/subdir/index.html', $this->htmlHead('<link href="/styles/main.css?version=2018">'));
+        $queue->add($asset->getUrl());
+        $html = $processor->process($asset, $queue);
+
+        $this->assertEquals($this->htmlHead('<link href="https://example.org/styles/main.css?version=2018">'), $html->getContent());
+        $this->assertNull($queue->next());
+
+        $asset = $this->createAsset('/subdir/index.html', $this->htmlHead('<link href="/styles/main.css#fragment">'));
+        $queue->add($asset->getUrl());
+        $html = $processor->process($asset, $queue);
+
+        $this->assertEquals($this->htmlHead('<link href="https://example.org/styles/main.css#fragment">'), $html->getContent());
+        $this->assertNull($queue->next());
     }
 
     /**
