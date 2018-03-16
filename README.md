@@ -15,7 +15,7 @@ Make sure you have [Composer] installed. Then execute:
 
     composer require baqend/spider
     
-This package requires at least **PHP 5.5.9**.
+This package requires at least **PHP 5.5.9** and has **no package dependencies!**
 
 
 Usage

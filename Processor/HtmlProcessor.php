@@ -5,7 +5,6 @@ namespace Baqend\Component\Spider\Processor;
 use Baqend\Component\Spider\Asset;
 use Baqend\Component\Spider\Queue\QueueInterface;
 use Baqend\Component\Spider\UrlHelper;
-use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * This processor finds URLs in HTML, makes them absolute, and adds
@@ -123,8 +122,10 @@ class HtmlProcessor implements ProcessorInterface
         // Find URLs in CSS style-tags
         if ($this->cssProcessor !== null) {
             // Handle 'style' tags
-            $crawler = new Crawler($domDocument);
-            $elements = $crawler->filterXPath('//*[@style]');
+            $xpath = new \DOMXPath($domDocument);
+
+            /** @var \DOMElement[] $elements */
+            $elements = $xpath->query('//*[@style]');
             foreach ($elements as $element) {
                 $cssString = $element->getAttribute('style');
                 $cssString = $this->cssProcessor->processCss($asset, $cssString, $queue);
@@ -163,6 +164,7 @@ class HtmlProcessor implements ProcessorInterface
     private function processElementAttribute(Asset $asset, \DOMElement $element, $attribute, QueueInterface $queue) {
         if ($attribute === 'srcset') {
             $this->processElementSrcSet($asset, $element, $queue);
+
             return;
         }
 
