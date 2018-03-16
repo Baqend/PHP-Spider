@@ -1,5 +1,6 @@
 {
   "name": "baqend/spider",
+  "version": "1.0.0",
   "description": "URL spider which crawls a page and all its subpages",
   "type": "library",
   "license": "MIT",
