@@ -32,13 +32,23 @@ class Asset
     }
 
     /**
+     * Creates a new asset based on this one with a new URL.
+     *
+     * @param string $newUrl The new URL to use.
+     * @return Asset The cloned asset.
+     */
+    public function withUrl($newUrl) {
+        return new Asset($newUrl, $this->statusCode, $this->contentType, $this->content);
+    }
+
+    /**
      * Creates a new asset based on this one with new content.
      *
      * @param string $newContent The new content to use.
-     * @return static The cloned asset.
+     * @return Asset The cloned asset.
      */
     public function withContent($newContent) {
-        return new static($this->url, $this->statusCode, $this->contentType, $newContent);
+        return new Asset($this->url, $this->statusCode, $this->contentType, $newContent);
     }
 
     /**
