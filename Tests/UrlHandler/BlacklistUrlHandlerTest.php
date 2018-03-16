@@ -28,5 +28,9 @@ class BlacklistUrlHandlerTest extends TestCase
         $this->assertFalse($handler->handle('https://example.org/dummy'));
         $this->assertFalse($handler->handle('https://example.de/dummy'));
         $this->assertTrue($handler->handle('https://example.com/dummy'));
+        $this->assertFalse($handler->handle('https://example.de/dummy?query'));
+        $this->assertTrue($handler->handle('https://example.com/dummy?query'));
+        $this->assertFalse($handler->handle('https://example.de/dummy#fragment'));
+        $this->assertTrue($handler->handle('https://example.com/dummy#fragment'));
     }
 }

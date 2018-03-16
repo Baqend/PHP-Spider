@@ -51,7 +51,7 @@ class BlacklistUrlHandler extends AbstractChainableUrlHandler
      */
     public function matchesBlacklist($url) {
         foreach ($this->blacklist as $pattern) {
-            if (preg_match($pattern, $url) === 1) {
+            if (preg_match($pattern, UrlHelper::stripQueryFragment($url)) === 1) {
                 return true;
             }
         }
